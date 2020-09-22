@@ -20,4 +20,10 @@
     npm run build
     npm run export
 
+### Env Priority
+
+1. `.env.local`
+1. `.env.production`
+1. `.env`
+
 Static files are found in `./out` directory.
