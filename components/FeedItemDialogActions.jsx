@@ -17,6 +17,7 @@ export default function FeedItemDialogActions({
     itemIndex,
     item,
     goTo,
+    close,
 }) {
     const size = window.innerWidth > 640 ? 'medium' : 'small';
 
@@ -62,17 +63,25 @@ export default function FeedItemDialogActions({
         <ButtonGrid
             justify="flex-start"
             items={[
-                item.url && (
+                <Button onClick={close} size={size} variant="outlined">
+                    <CloseIcon />
+                </Button>,
+                <ButtonGroup>
                     <Button
-                        startIcon={<OpenIcon />}
-                        href={item.url}
-                        target="_blank"
-                        variant="outlined"
+                        disabled={itemIndex === -1}
+                        onClick={() => goTo(feedItems[itemIndex - 1])}
                         size={size}
                     >
-                        Open
+                        <LeftIcon />
                     </Button>
-                ),
+                    <Button
+                        disabled={itemIndex === -1 || itemIndex === feedItems.length - 1}
+                        onClick={() => goTo(feedItems[itemIndex + 1])}
+                        size={size}
+                    >
+                        <RightIcon />
+                    </Button>
+                </ButtonGroup>,
                 !process.env.LIMITED && (
                     <ButtonGroup>
                         <Button
@@ -127,22 +136,17 @@ export default function FeedItemDialogActions({
                         </Button>
                     </ButtonGroup>
                 ),
-                <ButtonGroup>
+                item.url && (
                     <Button
-                        disabled={itemIndex === -1}
-                        onClick={() => goTo(feedItems[itemIndex - 1])}
+                        startIcon={<OpenIcon />}
+                        href={item.url}
+                        target="_blank"
+                        variant="outlined"
                         size={size}
                     >
-                        <LeftIcon />
+                        Open
                     </Button>
-                    <Button
-                        disabled={itemIndex === -1 || itemIndex === feedItems.length - 1}
-                        onClick={() => goTo(feedItems[itemIndex + 1])}
-                        size={size}
-                    >
-                        <RightIcon />
-                    </Button>
-                </ButtonGroup>,
+                ),
             ]}
         />
     );

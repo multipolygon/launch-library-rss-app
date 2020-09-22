@@ -4,14 +4,12 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import _findIndex from 'lodash/findIndex';
 import { useRouter } from 'next/router';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from 'mdi-material-ui/Close';
 import Box from '@material-ui/core/Box';
 import moment from 'moment';
 import { useMemo, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { H3, P } from './Typography';
+import { P } from './Typography';
 import DialogActions from './FeedItemDialogActions';
 
 export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }) {
@@ -79,16 +77,14 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
 
     return (
         <Dialog open={Boolean(itemId)} onClose={close} fullWidth maxWidth="md">
-            <DialogContent>
-                <IconButton
-                    onClick={close}
-                    variant="outlined"
-                    style={{ float: 'right', marginTop: '-1rem', marginRight: '-1rem' }}
-                >
-                    <CloseIcon />
-                </IconButton>
+            <DialogContent style={{ minHeight: '80vh' }}>
                 {item && (
                     <>
+                        <Box mb={3}>
+                            <DialogActions
+                                {...{ feedUrl, feedItems, itemId, itemIndex, item, goTo, close }}
+                            />
+                        </Box>
                         {item.image && (
                             <Avatar
                                 alt=""
@@ -104,32 +100,28 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                         )}
                         <Typography variant="h2">{item.title || itemId}</Typography>
                         {item && item._meta && item._meta.subtitle && (
-                            <H3>
-                                <strong
+                            <Box mt={1}>
+                                <Typography
+                                    variant="h3"
                                     onClick={() =>
                                         goToFeed(item && item._feed_url && item._feed_url.parent)
                                     }
                                 >
                                     {item._meta.subtitle}
-                                </strong>
-                            </H3>
+                                </Typography>
+                            </Box>
                         )}
                         {item && item.date_published && (
-                            <P>
-                                <strong>
+                            <Box mt={1}>
+                                <Typography variant="h4">
                                     <em>
                                         {moment
                                             .parseZone(item.date_published)
                                             .format('Do MMM YYYY')}
                                     </em>
-                                </strong>
-                            </P>
+                                </Typography>
+                            </Box>
                         )}
-                        <Box mt={2} mb={1}>
-                            <DialogActions
-                                {...{ feedUrl, feedItems, itemId, itemIndex, item, goTo }}
-                            />
-                        </Box>
                         {item.attachments &&
                             item.attachments
                                 .filter((a) => /^audio/.test(a.mime_type))
