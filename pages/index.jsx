@@ -53,7 +53,7 @@ const HeaderButton = ({ text, feedUrl }) => {
 
 export default function Index() {
     return (
-        <FeedWithMap defaultUrl={resolveUrl('./favourite_index.json', process.env.CONTENT_HOST)}>
+        <FeedWithMap defaultUrl={resolveUrl('./favourite.json', process.env.CONTENT_HOST)}>
             {({ feedUrl }) => (
                 <>
                     <Grid
