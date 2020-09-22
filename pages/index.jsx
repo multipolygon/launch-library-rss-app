@@ -14,6 +14,10 @@ import { shortUrl, resolveUrl } from '../utils/fetch';
 
 import FeedWithMap from '../components/FeedWithMap';
 
+const headerButtons = process.env.LIMITED
+    ? ['favourite']
+    : ['original', 'queue', 'favourite', 'archive'];
+
 const HeaderButton = ({ text, feedUrl }) => {
     const all = new URL(`./${text}.json`, feedUrl).href;
     const index = new URL(`./${text}_index.json`, feedUrl).href;
@@ -64,7 +68,7 @@ export default function Index() {
                         spacing={2}
                     >
                         {feedUrl &&
-                            ['original', 'queue', 'favourite', 'archive'].map((i) => (
+                            headerButtons.map((i) => (
                                 <HeaderButton key={i} text={i} feedUrl={feedUrl} />
                             ))}
                     </Grid>

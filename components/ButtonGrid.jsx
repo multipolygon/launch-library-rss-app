@@ -12,7 +12,7 @@ export default function ButtonGrid({ justify, alignItems, items, children }) {
             spacing={1}
         >
             {items &&
-                items.map((i, n) => (
+                items.filter(Boolean).map((i, n) => (
                     <Grid item key={n}>
                         {i}
                     </Grid>

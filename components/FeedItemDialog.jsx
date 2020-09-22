@@ -1,27 +1,18 @@
-/* global URL process */
 /* eslint-disable react/no-array-index-key */
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import _findIndex from 'lodash/findIndex';
 import { useRouter } from 'next/router';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import OpenIcon from 'mdi-material-ui/OpenInNew';
 import CloseIcon from 'mdi-material-ui/Close';
-import FavouriteIcon from 'mdi-material-ui/Star';
-import ArchiveIcon from 'mdi-material-ui/Archive';
-import QueueIcon from 'mdi-material-ui/InboxArrowDown';
-import LeftIcon from 'mdi-material-ui/ChevronLeft';
-import RightIcon from 'mdi-material-ui/ChevronRight';
 import Box from '@material-ui/core/Box';
 import moment from 'moment';
 import { useMemo, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import { P } from './Typography';
+import Typography from '@material-ui/core/Typography';
+import { H3, P } from './Typography';
+import DialogActions from './FeedItemDialogActions';
 
 export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }) {
     const router = useRouter();
@@ -86,87 +77,59 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
         return null;
     }, [feedItems, itemIndex]);
 
-    const action = (i, addOrRem, bucket, favourite) => {
-        if (i && window) {
-            const token =
-                (window && window.localStorage && window.localStorage.getItem('userToken')) || null;
-
-            window
-                .fetch(new URL('/actions/new', process.env.API_HOST).href, {
-                    method: 'POST',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...(token
-                            ? {
-                                  Authorization: `Bearer ${token}`,
-                              }
-                            : {}),
-                    },
-                    body: JSON.stringify({
-                        feedPath: ((i && i._feed_url && i._feed_url.parent) || feedUrl).replace(
-                            process.env.CONTENT_HOST_DEV || process.env.CONTENT_HOST,
-                            '',
-                        ),
-                        id: (i && i._id && i._id.parent) || itemId,
-                        action: addOrRem,
-                        bucket,
-                        favourite,
-                    }),
-                })
-                .then(() => {
-                    // todo
-                })
-                .catch(() => {
-                    // todo
-                });
-        }
-    };
-
     return (
         <Dialog open={Boolean(itemId)} onClose={close} fullWidth maxWidth="md">
-            <DialogTitle>
-                {item && item.image && (
-                    <Avatar
-                        alt=""
-                        src={item.image}
-                        variant="rounded"
-                        style={{
-                            float: 'left',
-                            width: '65px',
-                            height: '65px',
-                            marginRight: '15px',
-                        }}
-                    />
-                )}
+            <DialogContent>
                 <IconButton
                     onClick={close}
                     variant="outlined"
-                    style={{ float: 'right', marginTop: '-7px', marginRight: '-14px' }}
+                    style={{ float: 'right', marginTop: '-1rem', marginRight: '-1rem' }}
                 >
                     <CloseIcon />
                 </IconButton>
-                {(item && item.title) || itemId}
-                {item && item._meta && item._meta.subtitle && (
-                    <small
-                        onClick={() => goToFeed(item && item._feed_url && item._feed_url.parent)}
-                    >
-                        <br />
-                        {item._meta.subtitle}
-                    </small>
-                )}
-            </DialogTitle>
-            <DialogContent>
                 {item && (
                     <>
+                        {item.image && (
+                            <Avatar
+                                alt=""
+                                src={item.image}
+                                variant="rounded"
+                                style={{
+                                    float: 'left',
+                                    width: '10vw',
+                                    height: '10vw',
+                                    margin: '0.2rem 1rem 1rem 0',
+                                }}
+                            />
+                        )}
+                        <Typography variant="h2">{item.title || itemId}</Typography>
+                        {item && item._meta && item._meta.subtitle && (
+                            <H3>
+                                <strong
+                                    onClick={() =>
+                                        goToFeed(item && item._feed_url && item._feed_url.parent)
+                                    }
+                                >
+                                    {item._meta.subtitle}
+                                </strong>
+                            </H3>
+                        )}
                         {item && item.date_published && (
                             <P>
                                 <strong>
-                                    {moment.parseZone(item.date_published).format('Do MMM YYYY')}
+                                    <em>
+                                        {moment
+                                            .parseZone(item.date_published)
+                                            .format('Do MMM YYYY')}
+                                    </em>
                                 </strong>
                             </P>
                         )}
+                        <Box mt={2} mb={1}>
+                            <DialogActions
+                                {...{ feedUrl, feedItems, itemId, itemIndex, item, goTo }}
+                            />
+                        </Box>
                         {item.attachments &&
                             item.attachments
                                 .filter((a) => /^audio/.test(a.mime_type))
@@ -257,85 +220,8 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                         )}
                     </>
                 )}
+                <br />
             </DialogContent>
-            <DialogActions>
-                {item && (
-                    <>
-                        {item.url && (
-                            <Button
-                                startIcon={<OpenIcon />}
-                                href={item.url}
-                                target="_blank"
-                                variant="outlined"
-                            >
-                                Open
-                            </Button>
-                        )}
-                        <ButtonGroup>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'add', 'queue')}
-                                startIcon={<QueueIcon />}
-                            >
-                                Queue
-                            </Button>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'rem', 'queue')}
-                                style={{ padding: 0 }}
-                            >
-                                <CloseIcon fontSize="small" />
-                            </Button>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'add', 'archive')}
-                                startIcon={<ArchiveIcon />}
-                            >
-                                Archive
-                            </Button>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'rem', 'archive')}
-                                style={{ padding: 0 }}
-                            >
-                                <CloseIcon fontSize="small" />
-                            </Button>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'add', 'archive', true)}
-                                startIcon={<FavouriteIcon />}
-                            >
-                                Favourite
-                            </Button>
-                            <Button
-                                disabled={process.env.LIMITED}
-                                onClick={() => action(item, 'add', 'archive', false)}
-                                style={{ padding: 0 }}
-                            >
-                                <CloseIcon fontSize="small" />
-                            </Button>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <Button
-                                disabled={itemIndex === -1}
-                                onClick={() => goTo(feedItems[itemIndex - 1])}
-                            >
-                                <LeftIcon />
-                            </Button>
-                            <Button
-                                disabled={itemIndex === -1 || itemIndex === feedItems.length - 1}
-                                onClick={() => goTo(feedItems[itemIndex + 1])}
-                            >
-                                <RightIcon />
-                            </Button>
-                        </ButtonGroup>
-                    </>
-                )}
-            </DialogActions>
         </Dialog>
     );
 }
