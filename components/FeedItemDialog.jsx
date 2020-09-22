@@ -86,17 +86,22 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                             />
                         </Box>
                         {item.image && (
-                            <Avatar
-                                alt=""
-                                src={item.image}
-                                variant="rounded"
+                            <div
                                 style={{
                                     float: 'left',
-                                    width: '10vw',
-                                    height: '10vw',
                                     margin: '0.2rem 1rem 1rem 0',
                                 }}
-                            />
+                            >
+                                <Avatar
+                                    alt=""
+                                    src={item.image}
+                                    variant="rounded"
+                                    style={{
+                                        width: '10vw',
+                                        height: '10vw',
+                                    }}
+                                />
+                            </div>
                         )}
                         <Typography variant="h2">{item.title || itemId}</Typography>
                         {item && item._meta && item._meta.subtitle && (
@@ -122,94 +127,96 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                 </Typography>
                             </Box>
                         )}
-                        {item.attachments &&
-                            item.attachments
-                                .filter((a) => /^audio/.test(a.mime_type))
-                                .map((attachment) => (
-                                    <Box mt={3} mb={2} key={attachment.url}>
-                                        <audio controls style={{ width: '100%' }}>
-                                            <source
-                                                src={attachment.url}
-                                                type={attachment.mime_type}
-                                            />
-                                            <a href={attachment.url}>{attachment.url}</a>
-                                        </audio>
-                                    </Box>
-                                ))}
-                        {item.attachments &&
-                            item.attachments
-                                .filter((a) => /^video/.test(a.mime_type))
-                                .map((attachment) => (
-                                    <Box mt={3} mb={2} key={attachment.url}>
-                                        <video
-                                            controls
-                                            style={{ maxWidth: '100%', maxHeight: '70vh' }}
-                                        >
-                                            <source
-                                                src={attachment.url}
-                                                type={attachment.mime_type}
-                                            />
-                                            <a href={attachment.url}>{attachment.url}</a>
-                                        </video>
-                                    </Box>
-                                ))}
-                        {item._youtube && (
-                            <Box mt={3} mb={2}>
-                                <div
-                                    style={{
-                                        position: 'relative',
-                                        width: '100%',
-                                        height: 0,
-                                        paddingBottom: `${Math.round(
-                                            (item._youtube.height / item._youtube.width) * 100,
-                                        )}%`,
-                                    }}
-                                >
-                                    <iframe
-                                        title={item._youtube.id}
-                                        src={`https://www.youtube.com/embed/${item._youtube.id}`}
-                                        width={item._youtube.width}
-                                        height={item._youtube.height}
-                                        style={{
-                                            position: 'absolute',
-                                            width: '100%',
-                                            height: '100%',
-                                            left: 0,
-                                            top: 0,
-                                        }}
-                                        allowFullScreen
-                                    />
-                                </div>
-                            </Box>
-                        )}
-                        {item.attachments &&
-                            item.attachments
-                                .filter((a) => /^image/.test(a.mime_type))
-                                .map((attachment) => (
-                                    <Box mt={3} mb={2} key={attachment.url}>
-                                        <a href={attachment.url}>
-                                            <img
-                                                src={attachment.url}
-                                                title={attachment.url}
-                                                alt=""
+                        <div style={{ clear: 'left' }}>
+                            {item.attachments &&
+                                item.attachments
+                                    .filter((a) => /^audio/.test(a.mime_type))
+                                    .map((attachment) => (
+                                        <Box mt={3} mb={2} key={attachment.url}>
+                                            <audio controls style={{ width: '100%' }}>
+                                                <source
+                                                    src={attachment.url}
+                                                    type={attachment.mime_type}
+                                                />
+                                                <a href={attachment.url}>{attachment.url}</a>
+                                            </audio>
+                                        </Box>
+                                    ))}
+                            {item.attachments &&
+                                item.attachments
+                                    .filter((a) => /^video/.test(a.mime_type))
+                                    .map((attachment) => (
+                                        <Box mt={3} mb={2} key={attachment.url}>
+                                            <video
+                                                controls
                                                 style={{ maxWidth: '100%', maxHeight: '70vh' }}
-                                            />
-                                        </a>
-                                    </Box>
-                                ))}
+                                            >
+                                                <source
+                                                    src={attachment.url}
+                                                    type={attachment.mime_type}
+                                                />
+                                                <a href={attachment.url}>{attachment.url}</a>
+                                            </video>
+                                        </Box>
+                                    ))}
+                            {item._youtube && (
+                                <Box mt={3} mb={2}>
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '100%',
+                                            height: 0,
+                                            paddingBottom: `${Math.round(
+                                                (item._youtube.height / item._youtube.width) * 100,
+                                            )}%`,
+                                        }}
+                                    >
+                                        <iframe
+                                            title={item._youtube.id}
+                                            src={`https://www.youtube.com/embed/${item._youtube.id}`}
+                                            width={item._youtube.width}
+                                            height={item._youtube.height}
+                                            style={{
+                                                position: 'absolute',
+                                                width: '100%',
+                                                height: '100%',
+                                                left: 0,
+                                                top: 0,
+                                            }}
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                </Box>
+                            )}
+                            {item.attachments &&
+                                item.attachments
+                                    .filter((a) => /^image/.test(a.mime_type))
+                                    .map((attachment) => (
+                                        <Box mt={3} mb={2} key={attachment.url}>
+                                            <a href={attachment.url}>
+                                                <img
+                                                    src={attachment.url}
+                                                    title={attachment.url}
+                                                    alt=""
+                                                    style={{ maxWidth: '100%', maxHeight: '70vh' }}
+                                                />
+                                            </a>
+                                        </Box>
+                                    ))}
 
-                        {item.content_text &&
-                            item.content_text.split(/\n+/).map((p, n) => <P key={n}>{p}</P>)}
-                        {item.tags && item.tags.length !== 0 && (
-                            <P>
-                                <em>[{item.tags.join(', ')}]</em>
-                            </P>
-                        )}
-                        {item._archive && item._archive.log && item._archive.log.length !== 0 && (
-                            <P>
-                                <em>Log: {item._archive.log.join(', ')}</em>
-                            </P>
-                        )}
+                            {item.content_text &&
+                                item.content_text.split(/\n+/).map((p, n) => <P key={n}>{p}</P>)}
+                            {item.tags && item.tags.length !== 0 && (
+                                <P>
+                                    <em>[{item.tags.join(', ')}]</em>
+                                </P>
+                            )}
+                            {item._archive && item._archive.log && item._archive.log.length !== 0 && (
+                                <P>
+                                    <em>Log: {item._archive.log.join(', ')}</em>
+                                </P>
+                            )}
+                        </div>
                     </>
                 )}
                 <br />
