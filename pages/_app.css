@@ -1,0 +1,77 @@
+body {
+  background: #2962FF !important;
+}
+
+p {
+  overflow-wrap: break-word;
+}
+
+.main-background {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.main-container {
+  background: #fff;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.status-bar-background {
+  background-color: #2962FF;
+  position: fixed;
+  height: 200px;
+  top: -200px;
+  right: 0;
+  left: 0;
+  z-index: 10000;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+@media screen {
+  .print-only {
+    display: none;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .hidden-print {
+    display: none;
+  }
+
+  .print-only {
+    display: block;
+  }
+}
+
+.leaflet-popup-content {
+  text-align: center;
+}
+
+.leaflet-popup-content img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.MuiPagination-ul {
+  justify-content: center;
+}
+
+.mapicon {
+  background-color: red;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+}

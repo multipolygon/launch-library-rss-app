@@ -1,0 +1,53 @@
+{
+    "name": "feederjs-app",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "dev": "next dev -H 0.0.0.0 -p 3031",
+        "build": "webpack --config lib/leaflet.webpack.config.cjs && next build",
+        "export": "next export",
+        "prod": "next start",
+        "routes": "node -e 'require(\"./next.config.js\").exportPathMap()'",
+        "linter": "eslint --fix --ext .js,.mjs,.cjs,.jsx --ignore-path .gitignore .",
+        "prettier": "prettier --write '*.js' '{components,pages,scripts,utils}/**/*.{js,jsx,mjs,cjs}'",
+        "serve": "serve -l 3031 out",
+        "serveFeeds": "serve --cors -l 3032 ../feeds/"
+    },
+    "author": "Reilly Beacom",
+    "license": "",
+    "dependencies": {
+        "@material-ui/core": "^4.11.0",
+        "@material-ui/icons": "^4.9.1",
+        "@material-ui/lab": "^4.0.0-alpha.56",
+        "js-yaml": "^3.14.0",
+        "leaflet": "^1.6.0",
+        "leaflet-fullscreen": "^1.0.2",
+        "leaflet.markercluster": "^1.4.1",
+        "lodash": "^4.17.19",
+        "mdi-material-ui": "^6.18.0",
+        "moment": "^2.27.0",
+        "next": "^9.5.0",
+        "prop-types": "^15.7.2",
+        "query-string": "^6.13.1",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-json-tree": "^0.12.1",
+        "underscore.string": "^3.3.5",
+        "webpack-cli": "^3.3.12"
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.1.0",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.2.0",
+        "eslint-config-prettier": "^6.11.0",
+        "eslint-plugin-babel": "^5.3.1",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-jsx-a11y": "^6.3.1",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-react": "^7.20.4",
+        "eslint-plugin-react-hooks": "^2.5.1",
+        "prettier": "^2.0.5",
+        "serve": "^11.3.2",
+        "standard": "^14.3.4"
+    }
+}
