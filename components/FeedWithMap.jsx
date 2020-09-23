@@ -106,7 +106,8 @@ export default function FeedWithMap({ defaultUrl, children }) {
             itemsSort: s,
             itemsSortOrder: o,
             itemsFilter: f ? _fromPairs(f.split('|').map((n) => n.split('~', 2))) : undefined,
-            viewGrid: v,
+            viewGrid:
+                v || (window && window.innerWidth && window.innerWidth < 640 && 'lg') || undefined,
             searchText: q,
             page: parseInt(p || 1, 10) || 1,
             showMap: m,

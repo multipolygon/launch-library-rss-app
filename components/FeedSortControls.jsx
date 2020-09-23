@@ -85,7 +85,7 @@ export default function FeedSortControls({
             <Grid item>
                 <IconButton
                     color={viewGrid === 'lg' ? 'primary' : undefined}
-                    onClick={() => routerReplace({ v: viewGrid === 'lg' ? '' : 'lg' })}
+                    onClick={() => routerReplace({ v: viewGrid === 'lg' ? 'sm' : 'lg' })}
                 >
                     {viewGrid === 'lg' && <GridLargeIcon />}
                     {viewGrid !== 'lg' && <GridIcon />}
