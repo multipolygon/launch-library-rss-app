@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+/* eslint-disable react/no-danger */
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -99,6 +100,8 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                     style={{
                                         width: '10vw',
                                         height: '10vw',
+                                        maxWidth: '80px',
+                                        maxHeight: '80px',
                                     }}
                                 />
                             </div>
@@ -203,8 +206,18 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                             </a>
                                         </Box>
                                     ))}
-
-                            {item.content_text &&
+                            {item.content_html && (
+                                <Typography variant="body1">
+                                    <div
+                                        className="feed-item-dialog-content-html"
+                                        dangerouslySetInnerHTML={{
+                                            __html: item.content_html,
+                                        }}
+                                    />
+                                </Typography>
+                            )}
+                            {!item.content_html &&
+                                item.content_text &&
                                 item.content_text.split(/\n+/).map((p, n) => <P key={n}>{p}</P>)}
                             {item.tags && item.tags.length !== 0 && (
                                 <P>

@@ -15,13 +15,11 @@ import HomeIcon from 'mdi-material-ui/Home';
 import LogInIcon from 'mdi-material-ui/Login';
 import LogOutIcon from 'mdi-material-ui/Logout';
 import AboutIcon from 'mdi-material-ui/Information';
-import ChevronRightIcon from 'mdi-material-ui/ChevronRight';
-import Hidden from '@material-ui/core/Hidden';
 import Link from './Link';
 import LogInFormDialog from './LogInFormDialog';
 import { UserContext } from './User';
 
-export default function NavHeader({ title, href }) {
+export default function NavHeader() {
     const [drawerIsOpen, openDrawer] = useState(false);
     const [openLogInForm, setOpenLogInForm] = useState(false);
 
@@ -51,35 +49,9 @@ export default function NavHeader({ title, href }) {
                                 fontWeight: 500,
                             }}
                         >
-                            {title && (
-                                <>
-                                    <Hidden smDown>{process.env.APP_NAME}</Hidden>
-                                    <Hidden mdUp>{process.env.APP_MONOGRAM}</Hidden>
-                                </>
-                            )}
-                            {!title && process.env.APP_NAME}
+                            {process.env.APP_NAME}
                         </Link>
                     </Box>
-                    {title && (
-                        <>
-                            <Box ml={0.5} mt="3px">
-                                <ChevronRightIcon />
-                            </Box>
-                            <Box ml={0.5}>
-                                <a
-                                    href={href}
-                                    style={{
-                                        color: 'white',
-                                        fontSize: '20px',
-                                        lineHeight: '20px',
-                                        fontWeight: 500,
-                                    }}
-                                >
-                                    {title}
-                                </a>
-                            </Box>
-                        </>
-                    )}
                 </Toolbar>
             </AppBar>
             <Toolbar variant="dense" />
