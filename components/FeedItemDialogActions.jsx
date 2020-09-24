@@ -8,6 +8,7 @@ import ArchiveIcon from 'mdi-material-ui/Archive';
 import QueueIcon from 'mdi-material-ui/InboxArrowDown';
 import LeftIcon from 'mdi-material-ui/ChevronLeft';
 import RightIcon from 'mdi-material-ui/ChevronRight';
+import LinkIcon from 'mdi-material-ui/LinkVariant';
 import ButtonGrid from './ButtonGrid';
 
 export default function FeedItemDialogActions({
@@ -137,14 +138,13 @@ export default function FeedItemDialogActions({
                     </ButtonGroup>
                 ),
                 item.url && (
-                    <Button
-                        startIcon={<OpenIcon />}
-                        href={item.url}
-                        target="_blank"
-                        variant="outlined"
-                        size={size}
-                    >
-                        Open
+                    <Button href={item.url} target="_blank" variant="outlined" size={size}>
+                        <OpenIcon />
+                    </Button>
+                ),
+                item.external_url && (
+                    <Button href={item.external_url} target="_blank" variant="outlined" size={size}>
+                        <LinkIcon />
                     </Button>
                 ),
             ]}

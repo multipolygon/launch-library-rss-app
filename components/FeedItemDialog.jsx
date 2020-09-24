@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import { P } from './Typography';
 import DialogActions from './FeedItemDialogActions';
 
+const youTubeRegExp = /https?:\/\/(?:\w+\.)?youtube.com\/watch\?v=([\w\d]+)/;
+
 export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }) {
     const router = useRouter();
 
@@ -204,6 +206,21 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                                     style={{ maxWidth: '100%', maxHeight: '70vh' }}
                                                 />
                                             </a>
+                                        </Box>
+                                    ))}
+                            {!item._youtube &&
+                                [item.url, item.external_url]
+                                    .filter(Boolean)
+                                    .filter((url) => youTubeRegExp.test(url))
+                                    .map((url) => youTubeRegExp.exec(url)[1])
+                                    .map((youtubeId) => (
+                                        <Box mt={3} mb={2} key={youtubeId}>
+                                            <iframe
+                                                title={youtubeId}
+                                                src={`https://www.youtube.com/embed/${youtubeId}`}
+                                                allowFullScreen
+                                                style={{ width: '100%', height: '30vh' }}
+                                            />
                                         </Box>
                                     ))}
                             {item.content_html && (
