@@ -22,16 +22,13 @@ export default function FeedSortControls({
         'Date Published': 'date_published',
         'Date Modified': 'date_modified',
         // Meta:
-        Date: '_meta.date',
         Featured: '_meta.featured',
         Items: '_meta.itemCount',
         Photos: '_meta.imageCount',
         Videos: '_meta.videoCount',
         Audio: '_meta.audioCount',
-        Ids: '_meta.idCount',
-        Tags: '_meta.tagsCount',
+        // Tags: '_meta.tagsCount',
         Location: '_geo.coordinates',
-        Users: '_meta.userCount',
     };
 
     return (

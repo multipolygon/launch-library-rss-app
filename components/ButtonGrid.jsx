@@ -18,7 +18,7 @@ export default function ButtonGrid({ justify, alignItems, items, children }) {
                     </Grid>
                 ))}
             {children &&
-                children.map((i, n) => (
+                children.filter(Boolean).map((i, n) => (
                     <Grid item key={n}>
                         {i}
                     </Grid>

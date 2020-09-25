@@ -24,6 +24,8 @@ import _fromPairs from 'lodash/fromPairs';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
+import LinkIcon from 'mdi-material-ui/LinkVariant';
+import FileLinkIcon from 'mdi-material-ui/FileLink';
 import { resolveUrl, fetchJson, shortUrl } from '../utils/fetch';
 import FeedItemsGrid from './FeedItemsGrid';
 import GeoJsonMap from './GeoJsonMap';
@@ -385,15 +387,7 @@ export default function FeedWithMap({ defaultUrl, children }) {
     );
 
     return (
-        <Layout
-            title={(feed && feed.title) || error || 'Loading...'}
-            href={
-                (feed.author &&
-                    feed.author.url &&
-                    feed.author.url.replace(process.env.APP_HOST, '')) ||
-                '/'
-            }
-        >
+        <Layout title={(feed && feed.title) || error || 'Loading...'} href="/">
             {feedUrl && (
                 <Head>
                     <link rel="alternate" type="application/json" title="JSON" href={feedUrl} />
@@ -464,6 +458,70 @@ export default function FeedWithMap({ defaultUrl, children }) {
                 )}
             </Box>
             <Box mt={1}>
+                {feedUrl && !feedParams.filterTags && (
+                    <ButtonGrid justify="flex-start">
+                        {feed && feed._feed_url && feed._feed_url.src && feed.home_page_url && (
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                startIcon={<LinkIcon />}
+                                href={feed.home_page_url}
+                                target="_blank"
+                            >
+                                Webpage
+                            </Button>
+                        )}
+                        {feed && feed._feed_url && feed._feed_url.src && (
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                startIcon={<FileLinkIcon />}
+                                href={feed._feed_url.src}
+                                target="_blank"
+                            >
+                                Source
+                            </Button>
+                        )}
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<FileIcon type="xml" />}
+                            href={feedUrl.replace(/\.json$/, '.rss.xml')}
+                            target="_blank"
+                        >
+                            RSS
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<FileIcon type="xml" />}
+                            href={feedUrl.replace(/\.json$/, '.atom.xml')}
+                            target="_blank"
+                        >
+                            Atom
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<FileIcon type="json" />}
+                            href={feedUrl}
+                            target="_blank"
+                        >
+                            JSON
+                        </Button>
+                        {/* <Button */}
+                        {/*     size="small" */}
+                        {/*     variant="outlined" */}
+                        {/*     startIcon={<FileIcon type="json" />} */}
+                        {/*     href={feedUrl.replace(/\.json$/, '.geo.json')} */}
+                        {/*     target="_blank" */}
+                        {/* > */}
+                        {/*     GeoJSON */}
+                        {/* </Button> */}
+                    </ButtonGrid>
+                )}
+            </Box>
+            <Box mt={1}>
                 <FeedFilterControls
                     {...{
                         length: itemsFiltered.length,
@@ -518,48 +576,6 @@ export default function FeedWithMap({ defaultUrl, children }) {
                     variant="outlined"
                     shape="rounded"
                 />
-            </Box>
-            <Box mt={5} style={{ textAlign: 'center' }}>
-                {feedUrl && !feedParams.filterTags && (
-                    <ButtonGrid>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="json" />}
-                            href={feedUrl}
-                            target="_blank"
-                        >
-                            JSON
-                        </Button>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="json" />}
-                            href={feedUrl.replace(/\.json$/, '.geo.json')}
-                            target="_blank"
-                        >
-                            GeoJSON
-                        </Button>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="xml" />}
-                            href={feedUrl.replace(/\.json$/, '.rss.xml')}
-                            target="_blank"
-                        >
-                            RSS
-                        </Button>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="xml" />}
-                            href={feedUrl.replace(/\.json$/, '.atom.xml')}
-                            target="_blank"
-                        >
-                            Atom
-                        </Button>
-                    </ButtonGrid>
-                )}
             </Box>
         </Layout>
     );

@@ -11,11 +11,11 @@ import ImageIcon from 'mdi-material-ui/Camera';
 import TextIcon from 'mdi-material-ui/TextSubject';
 import VideoIcon from 'mdi-material-ui/Video';
 import LinkIcon from 'mdi-material-ui/LinkVariant';
+import YoutubeIcon from 'mdi-material-ui/Youtube';
 import AudioIcon from 'mdi-material-ui/VolumeHigh';
 import MapMarkerCheck from 'mdi-material-ui/MapMarkerCheckOutline';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
-import LeafIcon from 'mdi-material-ui/Leaf';
 import UserIcon from 'mdi-material-ui/Account';
 import TagIcon from 'mdi-material-ui/Tag';
 import queryString from 'query-string';
@@ -27,7 +27,7 @@ const icons = {
     imageCount: <ImageIcon />,
     videoCount: <VideoIcon />,
     audioCount: <AudioIcon />,
-    idCount: <LeafIcon />,
+    youtubeCount: <YoutubeIcon />,
     tagCount: <TagIcon />,
 };
 

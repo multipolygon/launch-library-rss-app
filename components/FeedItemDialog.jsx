@@ -34,9 +34,9 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
         }
     };
 
-    const goToFeed = (f) => {
-        if (f) {
-            router.replace('/', `/?${getParams({ f, p: 1, x: null })}`, { shallow: true });
+    const goToFeed = (i) => {
+        if (i) {
+            router.replace('/', `/?${getParams({ i, p: 1, x: null })}`, { shallow: true });
         }
     };
 
@@ -116,6 +116,7 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                     onClick={() =>
                                         goToFeed(item && item._feed_url && item._feed_url.parent)
                                     }
+                                    style={{ cursor: 'pointer' }}
                                 >
                                     {item._meta.subtitle}
                                 </Typography>
