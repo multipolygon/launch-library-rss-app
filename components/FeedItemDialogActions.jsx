@@ -9,7 +9,9 @@ import QueueIcon from 'mdi-material-ui/InboxArrowDown';
 import LeftIcon from 'mdi-material-ui/ChevronLeft';
 import RightIcon from 'mdi-material-ui/ChevronRight';
 import LinkIcon from 'mdi-material-ui/LinkVariant';
+import { useContext } from 'react';
 import ButtonGrid from './ButtonGrid';
+import { FeedbackContext } from './Feedback';
 
 export default function FeedItemDialogActions({
     feedUrl,
@@ -20,6 +22,7 @@ export default function FeedItemDialogActions({
     goTo,
     close,
 }) {
+    const [, setFeedback] = useContext(FeedbackContext);
     const size = window.innerWidth > 640 ? 'medium' : 'small';
 
     const action = (i, addOrRem, bucket, favourite) => {
@@ -52,10 +55,13 @@ export default function FeedItemDialogActions({
                     }),
                 })
                 .then(() => {
-                    // todo
+                    setFeedback({
+                        ok: true,
+                        msg: `Success (${bucket}-${addOrRem}).`,
+                    });
                 })
                 .catch(() => {
-                    // todo
+                    setFeedback({ ok: false, msg: 'Error!' });
                 });
         }
     };
