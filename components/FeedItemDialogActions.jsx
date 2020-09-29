@@ -10,8 +10,10 @@ import LeftIcon from 'mdi-material-ui/ChevronLeft';
 import RightIcon from 'mdi-material-ui/ChevronRight';
 import LinkIcon from 'mdi-material-ui/LinkVariant';
 import { useContext } from 'react';
+import httpStatusCodes from 'builtin-status-codes';
 import ButtonGrid from './ButtonGrid';
 import { FeedbackContext } from './Feedback';
+import { UserContext } from './User';
 
 export default function FeedItemDialogActions({
     feedUrl,
@@ -22,24 +24,22 @@ export default function FeedItemDialogActions({
     goTo,
     close,
 }) {
+    const { user } = useContext(UserContext);
     const [, setFeedback] = useContext(FeedbackContext);
     const size = window.innerWidth > 640 ? 'medium' : 'small';
 
     const action = (i, addOrRem, bucket, favourite) => {
-        if (i && window) {
-            const token =
-                (window && window.localStorage && window.localStorage.getItem('userToken')) || null;
-
+        if (i) {
             window
-                .fetch(new URL('/actions/new', process.env.API_HOST).href, {
+                .fetch(new URL('/feed-item-action', process.env.API_HOST).href, {
                     method: 'POST',
                     mode: 'cors',
                     cache: 'no-cache',
                     headers: {
                         'Content-Type': 'application/json',
-                        ...(token
+                        ...(user && user.token
                             ? {
-                                  Authorization: `Bearer ${token}`,
+                                  Authorization: `Bearer ${user.token}`,
                               }
                             : {}),
                     },
@@ -54,11 +54,15 @@ export default function FeedItemDialogActions({
                         favourite,
                     }),
                 })
-                .then(() => {
-                    setFeedback({
-                        ok: true,
-                        msg: `Success (${bucket}-${addOrRem}).`,
-                    });
+                .then((response) => {
+                    if (response.ok) {
+                        setFeedback({
+                            ok: true,
+                            msg: `Success (${bucket}-${addOrRem}).`,
+                        });
+                    } else {
+                        setFeedback({ ok: false, msg: httpStatusCodes[response.status] });
+                    }
                 })
                 .catch(() => {
                     setFeedback({ ok: false, msg: 'Error!' });

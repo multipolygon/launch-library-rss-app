@@ -23,14 +23,7 @@ export default function NavHeader() {
     const [drawerIsOpen, openDrawer] = useState(false);
     const [openLogInForm, setOpenLogInForm] = useState(false);
 
-    const [user, setUser] = useContext(UserContext);
-
-    const logOut = () => {
-        if (window && typeof window === 'object') {
-            window.localStorage.removeItem('userToken');
-        }
-        setUser({});
-    };
+    const { user, clearUser } = useContext(UserContext);
 
     return (
         <>
@@ -71,7 +64,7 @@ export default function NavHeader() {
                         </ListItem>
                         {process.env.API_HOST && (
                             <>
-                                {user && !user.name && (
+                                {user && !user.token && (
                                     <ListItem button onClick={() => setOpenLogInForm(true)}>
                                         <ListItemIcon>
                                             <LogInIcon />
@@ -79,8 +72,8 @@ export default function NavHeader() {
                                         <ListItemText primary="Log In" />
                                     </ListItem>
                                 )}
-                                {user && user.name && (
-                                    <ListItem button onClick={logOut}>
+                                {user && user.token && (
+                                    <ListItem button onClick={clearUser}>
                                         <ListItemIcon>
                                             <LogOutIcon />
                                         </ListItemIcon>

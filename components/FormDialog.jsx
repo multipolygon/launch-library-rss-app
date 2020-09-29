@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import { createHash } from 'crypto';
 import DialogActions from '@material-ui/core/DialogActions';
 import { FeedbackContext } from './Feedback';
+import { UserContext } from './User';
 
 export default function FormDialog({
     open,
@@ -38,6 +39,7 @@ export default function FormDialog({
     const [, setFeedback] = useContext(FeedbackContext);
     const [errors, setErrors] = useState({});
     const [openErrorsDialog, setOpenErrorsDialog] = useState(false);
+    const { user } = useContext(UserContext);
 
     const getFieldValues = (obj) =>
         Object.keys(fields).reduce(
@@ -65,8 +67,6 @@ export default function FormDialog({
     const save = () => {
         if (!active) {
             setActive(true);
-            const token =
-                (window && window.localStorage && window.localStorage.getItem('userToken')) || '-';
             /* eslint-disable camelcase */
             const { password, password_confirmation } = data;
             const bodyData =
@@ -90,7 +90,11 @@ export default function FormDialog({
                             credentials: 'include',
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `Bearer ${token}`,
+                                ...(user && user.token
+                                    ? {
+                                          Authorization: `Bearer ${user.token}`,
+                                      }
+                                    : {}),
                             },
                             body: JSON.stringify({
                                 utf8: '✓',
@@ -158,7 +162,7 @@ export default function FormDialog({
                 <DialogTitle>Please Review</DialogTitle>
                 <DialogContent>
                     {Object.keys(errors).map((k) => (
-                        <Typography variant="body1">
+                        <Typography key={k} variant="body1">
                             <strong>{k}:</strong> {errors[k].join(', ')}
                         </Typography>
                     ))}
@@ -175,7 +179,7 @@ export default function FormDialog({
                 open={open}
                 onClose={() => setOpen(false)}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
             >
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>

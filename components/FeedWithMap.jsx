@@ -4,7 +4,6 @@
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
-import Button from '@material-ui/core/Button';
 import Head from 'next/head';
 import _stripTags from 'underscore.string/stripTags';
 import _startsWith from 'lodash/startsWith';
@@ -24,17 +23,13 @@ import _fromPairs from 'lodash/fromPairs';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
-import LinkIcon from 'mdi-material-ui/LinkVariant';
-import FileLinkIcon from 'mdi-material-ui/FileLink';
 import { resolveUrl, fetchJson, shortUrl } from '../utils/fetch';
 import FeedItemsGrid from './FeedItemsGrid';
 import GeoJsonMap from './GeoJsonMap';
 import Layout from './Layout';
 import { H1, P } from './Typography';
-import FileIcon from './FileIcon';
 import FeedSortControls from './FeedSortControls';
 import FeedFilterControls from './FeedFilterControls';
-import ButtonGrid from './ButtonGrid';
 import FeedItemDialog from './FeedItemDialog';
 
 const PER_PAGE = 52;
@@ -61,7 +56,7 @@ function feedParamsReducer(prev, next) {
     );
 }
 
-export default function FeedWithMap({ defaultUrl, children }) {
+export default function FeedWithMap({ defaultUrl, subheader, children }) {
     const [feedUrl, setFeedUrl] = useState();
     const [feedParams, setFeedParams] = useReducer(feedParamsReducer, { page: 1 });
     const [error, setError] = useState(null);
@@ -457,70 +452,18 @@ export default function FeedWithMap({ defaultUrl, children }) {
                     </Collapse>
                 )}
             </Box>
-            <Box mt={1}>
-                {feedUrl && !feedParams.filterTags && (
-                    <ButtonGrid justify="flex-start">
-                        {feed && feed._feed_url && feed._feed_url.src && feed.home_page_url && (
-                            <Button
-                                size="small"
-                                variant="outlined"
-                                startIcon={<LinkIcon />}
-                                href={feed.home_page_url}
-                                target="_blank"
-                            >
-                                Webpage
-                            </Button>
-                        )}
-                        {feed && feed._feed_url && feed._feed_url.src && (
-                            <Button
-                                size="small"
-                                variant="outlined"
-                                startIcon={<FileLinkIcon />}
-                                href={feed._feed_url.src}
-                                target="_blank"
-                            >
-                                Source
-                            </Button>
-                        )}
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="xml" />}
-                            href={feedUrl.replace(/\.json$/, '.rss.xml')}
-                            target="_blank"
-                        >
-                            RSS
-                        </Button>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="xml" />}
-                            href={feedUrl.replace(/\.json$/, '.atom.xml')}
-                            target="_blank"
-                        >
-                            Atom
-                        </Button>
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<FileIcon type="json" />}
-                            href={feedUrl}
-                            target="_blank"
-                        >
-                            JSON
-                        </Button>
-                        {/* <Button */}
-                        {/*     size="small" */}
-                        {/*     variant="outlined" */}
-                        {/*     startIcon={<FileIcon type="json" />} */}
-                        {/*     href={feedUrl.replace(/\.json$/, '.geo.json')} */}
-                        {/*     target="_blank" */}
-                        {/* > */}
-                        {/*     GeoJSON */}
-                        {/* </Button> */}
-                    </ButtonGrid>
-                )}
-            </Box>
+            {subheader && (
+                <Box mt={1}>
+                    {subheader({
+                        feed,
+                        feedUrl,
+                        feedParams,
+                        getParams,
+                        filterTags,
+                        items: itemsFiltered,
+                    })}
+                </Box>
+            )}
             <Box mt={1}>
                 <FeedFilterControls
                     {...{
