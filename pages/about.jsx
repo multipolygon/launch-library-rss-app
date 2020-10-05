@@ -17,9 +17,7 @@ export default function About() {
                     </a>
                 </P>
                 <P>
-                    <a href="/third-party-notices.txt">
-                        Third-party notices
-                    </a>
+                    <a href="/third-party-notices.txt">Third-party notices</a>
                 </P>
             </ContentBox>
         </Layout>

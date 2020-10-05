@@ -23,8 +23,8 @@ import ButtonGrid from '../components/ButtonGrid';
 import FeedWithMap from '../components/FeedWithMap';
 
 const headerButtons = process.env.LIMITED
-      ? ['favourite']
-      : ['original', 'queue', 'favourite', 'archive'];
+    ? ['favourite']
+    : ['original', 'queue', 'favourite', 'archive'];
 
 const HeaderButton = ({ text, feedUrl }) => {
     const all = new URL(`./${text}.json`, feedUrl).href;
@@ -71,38 +71,36 @@ export default function Index() {
         <>
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
                 {feedUrl &&
-                 headerButtons.map((i) => <HeaderButton key={i} text={i} feedUrl={feedUrl} />)}
+                    headerButtons.map((i) => <HeaderButton key={i} text={i} feedUrl={feedUrl} />)}
             </Grid>
-            {feedUrl &&
-             shortUrl(feedUrl)
-             .split('/').length > 2 && (
-                 <Box mt={2.5}>
-                     <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} maxItems={5}>
-                         {feedUrl &&
-                          shortUrl(feedUrl)
-                          .split('/')
-                          .map((v, i, a) =>
-                               i > a.length - 3 ? null : (
-                                   /* eslint-disable react/no-array-index-key */
-                                   <Link
-                                       key={i + v}
-                                       href="/"
-                                       as={`/?i=${encodeURIComponent(
-                                            `${a.slice(0, i + 1).join('/')}/${a[a.length - 1]
-                                                                              .replace(/_index.json$/, '')
-                                                                              .replace(/.json$/, '')}_index.json`,
-                                        )}`}
-                                   >
-                                       {v === '.' ? 'All' : _startCase(v)}
-                                   </Link>
-                               ),
-                              )}
-                         <Link href="/" as={`/?i=${encodeURIComponent(feedUrl)}`}>
-                             &nbsp;
-                         </Link>
-                     </Breadcrumbs>
-                 </Box>
-             )}
+            {feedUrl && shortUrl(feedUrl).split('/').length > 2 && (
+                <Box mt={2.5}>
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} maxItems={5}>
+                        {feedUrl &&
+                            shortUrl(feedUrl)
+                                .split('/')
+                                .map((v, i, a) =>
+                                    i > a.length - 3 ? null : (
+                                        /* eslint-disable react/no-array-index-key */
+                                        <Link
+                                            key={i + v}
+                                            href="/"
+                                            as={`/?i=${encodeURIComponent(
+                                                `${a.slice(0, i + 1).join('/')}/${a[a.length - 1]
+                                                    .replace(/_index.json$/, '')
+                                                    .replace(/.json$/, '')}_index.json`,
+                                            )}`}
+                                        >
+                                            {v === '.' ? 'All' : _startCase(v)}
+                                        </Link>
+                                    ),
+                                )}
+                        <Link href="/" as={`/?i=${encodeURIComponent(feedUrl)}`}>
+                            &nbsp;
+                        </Link>
+                    </Breadcrumbs>
+                </Box>
+            )}
         </>
     );
 

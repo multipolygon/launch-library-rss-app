@@ -20,6 +20,7 @@ import UserIcon from 'mdi-material-ui/Account';
 import TagIcon from 'mdi-material-ui/Tag';
 import queryString from 'query-string';
 import { useRouter } from 'next/router';
+import _truncate from 'lodash/truncate';
 
 const icons = {
     itemCount: <ItemIcon />,
@@ -63,19 +64,21 @@ export default function FeedItemCard({
     return (
         <Card>
             <CardActionArea onClick={click}>
-                <CardMedia
-                    style={{
-                        height: viewGrid === 'lg' ? '260px' : '140px',
-                        lineHeight: viewGrid === 'lg' ? '260px' : '140px',
-                        backgroundColor: '#EEE',
-                        textAlign: 'center',
-                        color: '#888',
-                    }}
-                    image={image}
-                >
-                    {!image && url && <LinkIcon />}
-                    {!image && !url && <TextIcon />}
-                </CardMedia>
+                {image && (
+                    <CardMedia
+                        style={{
+                            height: viewGrid === 'lg' ? '260px' : '140px',
+                            lineHeight: viewGrid === 'lg' ? '260px' : '140px',
+                            backgroundColor: '#EEE',
+                            textAlign: 'center',
+                            color: '#888',
+                        }}
+                        image={image}
+                    >
+                        {!image && url && <LinkIcon />}
+                        {!image && !url && <TextIcon />}
+                    </CardMedia>
+                )}
                 <CardContent>
                     <Typography variant="body2" component="div" style={{ margin: 0 }}>
                         {(_meta && _meta.date) ||
@@ -102,7 +105,7 @@ export default function FeedItemCard({
                     {title && title !== hideTitle && (
                         <>
                             <Typography variant="h2" component="div">
-                                {title}
+                                {_truncate(title, { length: 140 })}
                             </Typography>
                             {_meta && _meta.subtitle && (
                                 <Box mt={0.5}>
