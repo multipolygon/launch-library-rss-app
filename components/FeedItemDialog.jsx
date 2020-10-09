@@ -133,6 +133,9 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                             .parseZone(item.date_published)
                                             .format('Do MMM YYYY')}
                                     </em>
+                                    {item.author && item.author.name && (
+                                        <> / by {item.author.name}</>
+                                    )}
                                 </Typography>
                             </Box>
                         )}
