@@ -4,12 +4,15 @@
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import _findIndex from 'lodash/findIndex';
+import _last from 'lodash/last';
 import { useRouter } from 'next/router';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import { useMemo, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import AttachmentIcon from 'mdi-material-ui/Paperclip';
 import { P } from './Typography';
 import DialogActions from './FeedItemDialogActions';
 
@@ -222,6 +225,21 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                                 allowFullScreen
                                                 style={{ width: '100%', height: '30vh' }}
                                             />
+                                        </Box>
+                                    ))}
+                            {item.attachments &&
+                                item.attachments
+                                    .filter((a) => !/^(image|video|audio)/.test(a.mime_type))
+                                    .map((attachment) => (
+                                        <Box mt={3} mb={2} key={attachment.url}>
+                                            <Button
+                                                href={attachment.url}
+                                                startIcon={<AttachmentIcon />}
+                                                variant="outlined"
+                                                target="_blank"
+                                            >
+                                                {_last(attachment.url.split('/'))}
+                                            </Button>
                                         </Box>
                                     ))}
                             {item.content_html && (
