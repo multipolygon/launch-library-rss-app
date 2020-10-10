@@ -204,7 +204,12 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                 item.attachments
                                     .filter((a) => /^image/.test(a.mime_type))
                                     .map((attachment) => (
-                                        <Box mt={3} mb={2} key={attachment.url}>
+                                        <Box
+                                            mt={3}
+                                            mb={2}
+                                            key={attachment.url}
+                                            style={{ textAlign: 'center' }}
+                                        >
                                             <a href={attachment.url}>
                                                 <img
                                                     src={attachment.url}
