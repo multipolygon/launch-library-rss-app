@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import AttachmentIcon from 'mdi-material-ui/Paperclip';
@@ -20,6 +20,7 @@ const youTubeRegExp = /https?:\/\/(?:\w+\.)?youtube.com\/watch\?v=([\w\d]+)/;
 
 export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }) {
     const router = useRouter();
+    const [showSource, setShowSource] = useState(false);
 
     const itemIndex = useMemo(() => _findIndex(feedItems || [], (i) => i.id === itemId), [
         feedItems,
@@ -112,7 +113,7 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                             </div>
                         )}
                         <Typography variant="h2">{item.title || itemId}</Typography>
-                        {item && item._meta && item._meta.subtitle && (
+                        {item._meta && item._meta.subtitle && (
                             <Box mt={1}>
                                 <Typography
                                     variant="h3"
@@ -125,7 +126,7 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                 </Typography>
                             </Box>
                         )}
-                        {item && item.date_published && (
+                        {item.date_published && (
                             <Box mt={1}>
                                 <Typography variant="h4">
                                     <em>
@@ -273,6 +274,16 @@ export default function FeedItemDialog({ feedUrl, feedItems, itemId, getParams }
                                     <em>Log: {item._archive.log.join(', ')}</em>
                                 </P>
                             )}
+                            {showSource && (
+                                <pre>
+                                    <code>{JSON.stringify(item, null, 4)}</code>
+                                </pre>
+                            )}
+                            <P>
+                                <Button onClick={() => setShowSource(!showSource)} size="small">
+                                    {showSource ? 'Hide' : 'Show'} source
+                                </Button>
+                            </P>
                         </div>
                     </>
                 )}
