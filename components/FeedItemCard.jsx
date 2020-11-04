@@ -51,9 +51,11 @@ export default function FeedItemCard({
         if (url) {
             const href = new URL(url);
             if (href.host === new URL(process.env.APP_HOST).host && href.pathname === '/') {
-                const { i } = queryString.parse(href.search);
+                const { i, t } = queryString.parse(href.search);
                 if (i) {
-                    router.push('/', `/?${getParams({ i })}`, { shallow: true });
+                    router.push('/', `/?${getParams({ i, t: t ? t.split('|') : undefined })}`, {
+                        shallow: true,
+                    });
                     return;
                 }
             }

@@ -148,12 +148,24 @@ export default function FeedItemDialogActions({
                     </ButtonGroup>
                 ),
                 item.url && (
-                    <Button href={item.url} target="_blank" variant="outlined" size={size}>
+                    <Button
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="outlined"
+                        size={size}
+                    >
                         <OpenIcon />
                     </Button>
                 ),
                 item.external_url && (
-                    <Button href={item.external_url} target="_blank" variant="outlined" size={size}>
+                    <Button
+                        href={item.external_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="outlined"
+                        size={size}
+                    >
                         <LinkIcon />
                     </Button>
                 ),

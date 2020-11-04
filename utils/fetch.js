@@ -10,33 +10,27 @@ const opt = {
     mode: 'cors',
 };
 
+const allowAllHosts = process.env.ALLOW_ALL_HOSTS === 'yes';
+
 const whitelist = [
     process.env.CONTENT_HOST,
     process.env.CONTENT_HOST_DEV,
-    process.env.SPECIES_HOST,
-    process.env.SPECIES_HOST_DEV,
     ...(process.env.EXTERNAL_HOSTS ? process.env.EXTERNAL_HOSTS.split(',') : []),
 ]
     .filter(Boolean)
     .map((i) => new URL(i).host);
 
 export const resolveUrl = (src, host, fixHost) => {
-    if (fixHost !== false && (process.env.CONTENT_HOST_DEV || process.env.SPECIES_HOST_DEV)) {
+    if (fixHost !== false && process.env.CONTENT_HOST_DEV) {
         return resolveUrl(
-            src
-                .replace(process.env.CONTENT_HOST, process.env.CONTENT_HOST_DEV)
-                .replace(process.env.SPECIES_HOST, process.env.SPECIES_HOST_DEV),
-            host
-                ? host
-                      .replace(process.env.CONTENT_HOST, process.env.CONTENT_HOST_DEV)
-                      .replace(process.env.SPECIES_HOST, process.env.SPECIES_HOST_DEV)
-                : undefined,
+            src.replace(process.env.CONTENT_HOST, process.env.CONTENT_HOST_DEV),
+            host ? host.replace(process.env.CONTENT_HOST, process.env.CONTENT_HOST_DEV) : undefined,
             false,
         );
     }
     try {
         const url = host ? new URL(src, host) : new URL(src);
-        if (whitelist.includes(url.host)) {
+        if (allowAllHosts || whitelist.includes(url.host)) {
             return url.href;
         }
         if (console) console.error('Host not in whitelist:', url.host);

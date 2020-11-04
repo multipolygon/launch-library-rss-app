@@ -1,4 +1,4 @@
-/* global URLSearchParams process */
+/* global URL URLSearchParams process */
 /* eslint-disable react/no-array-index-key */
 
 import Box from '@material-ui/core/Box';
@@ -7,7 +7,6 @@ import { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
 import Head from 'next/head';
 import _stripTags from 'underscore.string/stripTags';
 import _startsWith from 'lodash/startsWith';
-import _endsWith from 'lodash/endsWith';
 import _upperFirst from 'lodash/upperFirst';
 import _orderBy from 'lodash/orderBy';
 import _get from 'lodash/get';
@@ -15,6 +14,8 @@ import _pickBy from 'lodash/pickBy';
 import _isEqual from 'lodash/isEqual';
 import _isArray from 'lodash/isArray';
 import _last from 'lodash/last';
+import _uniq from 'lodash/uniq';
+import _without from 'lodash/without';
 import Pagination from '@material-ui/lab/Pagination';
 import { useRouter } from 'next/router';
 import queryString from 'query-string';
@@ -31,6 +32,7 @@ import { H1, P } from './Typography';
 import FeedSortControls from './FeedSortControls';
 import FeedFilterControls from './FeedFilterControls';
 import FeedItemDialog from './FeedItemDialog';
+import FeedTagBreadcrumbs from './FeedTagBreadcrumbs';
 
 const PER_PAGE = 52;
 
@@ -234,17 +236,19 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
                         normalFilterTags.reduce((acc, ft) => acc && tags.includes(ft), true),
                 );
 
-                const groupByTag = _last(_last(filterTags)) === '~' ? _last(filterTags) : null;
+                const groupByTag =
+                    _last(filterTags) === '~' || _last(_last(filterTags)) === '~'
+                        ? _last(filterTags)
+                        : null;
 
                 if (groupByTag) {
-                    // console.log('Group:', groupByTag);
                     items = Object.values(
                         items.reduce((acc, item) => {
                             if (item.tags) {
                                 item.tags.forEach((tag) => {
                                     if (
                                         tag &&
-                                        _startsWith(tag, groupByTag) &&
+                                        (groupByTag === '~' || _startsWith(tag, groupByTag)) &&
                                         (!filterTags || !filterTags.includes(tag))
                                     ) {
                                         const rhs = tag.replace(new RegExp(`^${groupByTag}`), '');
@@ -254,14 +258,15 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
                                         if (acc[t] === undefined) {
                                             acc[t] = {
                                                 id: t,
-                                                url: `/items?${getParams({
-                                                    t: [
-                                                        ...(filterTags || []).filter(
-                                                            (i) => !_endsWith(i, '~'),
-                                                        ),
-                                                        groupByTag + t,
-                                                    ],
-                                                })}`,
+                                                url: new URL(
+                                                    `/?${getParams({
+                                                        t: [
+                                                            ...normalFilterTags,
+                                                            groupByTag === '~' ? t : groupByTag + t,
+                                                        ],
+                                                    })}`,
+                                                    process.env.APP_HOST,
+                                                ),
                                                 title: _upperFirst(
                                                     t.replace(/_/g, ' ').replace(/~$/, ''),
                                                 ),
@@ -269,6 +274,7 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
                                                 image: item.image,
                                                 date_published: item.date_published,
                                                 date_modified: item.date_published,
+                                                tags: [t],
                                                 _geo: {
                                                     allCoordinates:
                                                         item._geo && item._geo.coordinates
@@ -331,6 +337,13 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
         }
         return [];
     }, [feedItems, feedParams.itemsFilter, filterTags, feedParams.searchText, feedParams.showMap]);
+
+    const uniqItemTags = useMemo(() =>
+        _without(
+            itemsFiltered.reduce((acc, i) => _uniq([...acc, ...(i.tags || [])]), []),
+            ...(filterTags || []),
+        ),
+    );
 
     const itemsSorted = useMemo(() => {
         let { itemsSort, itemsSortOrder } = feedParams;
@@ -472,10 +485,13 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
                         lastPage,
                         itemsFilter: feedParams.itemsFilter,
                         searchText: feedParams.searchText,
+                        filterTags,
+                        uniqItemTags,
                         routerReplace,
                     }}
                 />
             </Box>
+            <FeedTagBreadcrumbs filterTags={filterTags} getParams={getParams} />
             {geo && geo.features && geo.features.length !== 0 && feedParams.showMap !== '-' && (
                 <Box mt={1} mb={1}>
                     <GeoJsonMap geo={geo} />

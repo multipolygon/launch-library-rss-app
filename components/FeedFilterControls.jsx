@@ -2,12 +2,14 @@ import _pickBy from 'lodash/pickBy';
 import IconButton from '@material-ui/core/IconButton';
 import ImageIcon from 'mdi-material-ui/Camera';
 import MapMarkerIcon from 'mdi-material-ui/MapMarkerCheckOutline';
+import TagIcon from 'mdi-material-ui/Tag';
 import Badge from '@material-ui/core/Badge';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { useRef, useEffect } from 'react';
 import Hidden from '@material-ui/core/Hidden';
+import _last from 'lodash/last';
 
 const filterNext = {
     undefined: 'yes',
@@ -21,6 +23,8 @@ export default function FeedSortControls({
     lastPage,
     itemsFilter,
     searchText,
+    filterTags,
+    uniqItemTags,
     routerReplace,
 }) {
     const searchTimeout = useRef(null);
@@ -57,6 +61,33 @@ export default function FeedSortControls({
             alignContent="center"
             spacing={1}
         >
+            <Grid item>
+                <IconButton
+                    edge="start"
+                    onClick={() =>
+                        routerReplace({
+                            t:
+                                filterTags && _last(filterTags) === '~'
+                                    ? filterTags.slice(0, filterTags.length - 1)
+                                    : [...(filterTags || []), '~'],
+                        })
+                    }
+                >
+                    <Badge
+                        badgeContent={uniqItemTags.length}
+                        invisible={uniqItemTags.length === 0}
+                        color={filterTags && _last(filterTags) === '~' ? 'primary' : 'default'}
+                        style={{
+                            color:
+                                filterTags && _last(filterTags) === '~'
+                                    ? process.env.THEME_COLOR
+                                    : 'inherit',
+                        }}
+                    >
+                        <TagIcon />
+                    </Badge>
+                </IconButton>
+            </Grid>
             {Object.keys(filterOptions).map((i) => (
                 <Grid item key={i}>
                     <IconButton
@@ -84,7 +115,7 @@ export default function FeedSortControls({
                             style={{
                                 color:
                                     itemsFilter && itemsFilter[filterOptions[i]]
-                                        ? '#558b2f'
+                                        ? process.env.THEME_COLOR
                                         : 'inherit',
                             }}
                         >
