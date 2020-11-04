@@ -338,11 +338,15 @@ export default function FeedWithMap({ defaultUrl, subheader, children }) {
         return [];
     }, [feedItems, feedParams.itemsFilter, filterTags, feedParams.searchText, feedParams.showMap]);
 
-    const uniqItemTags = useMemo(() =>
-        _without(
-            itemsFiltered.reduce((acc, i) => _uniq([...acc, ...(i.tags || [])]), []),
-            ...(filterTags || []),
-        ),
+    const uniqItemTags = useMemo(
+        () =>
+            _uniq(
+                (itemsFiltered || [])
+                    .slice(0, 500)
+                    .reduce((acc, i) => acc.concat(_without(i.tags, filterTags || [])), []),
+                [],
+            ),
+        [itemsFiltered],
     );
 
     const itemsSorted = useMemo(() => {

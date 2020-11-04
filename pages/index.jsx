@@ -19,8 +19,9 @@ import { UserContext } from '../components/User';
 import FeedConfigFormDialog from '../components/FeedConfigFormDialog';
 import FileIcon from '../components/FileIcon';
 import ButtonGrid from '../components/ButtonGrid';
-
 import FeedWithMap from '../components/FeedWithMap';
+
+const contentHost = new URL(process.env.CONTENT_HOST).host;
 
 const headerButtons = process.env.LIMITED
     ? ['favourite']
@@ -67,42 +68,63 @@ export default function Index() {
     const { user } = useContext(UserContext);
     const [openConfig, setOpenConfig] = useState(false);
 
-    const header = ({ feedUrl }) => (
-        <>
-            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
-                {feedUrl &&
-                    headerButtons.map((i) => <HeaderButton key={i} text={i} feedUrl={feedUrl} />)}
-            </Grid>
-            {feedUrl && shortUrl(feedUrl).split('/').length > 2 && (
-                <Box mt={2.5}>
-                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} maxItems={5}>
-                        {feedUrl &&
-                            shortUrl(feedUrl)
-                                .split('/')
-                                .map((v, i, a) =>
-                                    i > a.length - 3 ? null : (
-                                        /* eslint-disable react/no-array-index-key */
-                                        <Link
-                                            key={i + v}
-                                            href="/"
-                                            as={`/?i=${encodeURIComponent(
-                                                `${a.slice(0, i + 1).join('/')}/${a[a.length - 1]
-                                                    .replace(/_index.json$/, '')
-                                                    .replace(/.json$/, '')}_index.json`,
-                                            )}`}
-                                        >
-                                            {v === '.' ? 'All' : _startCase(v)}
-                                        </Link>
-                                    ),
-                                )}
-                        <Link href="/" as={`/?i=${encodeURIComponent(feedUrl)}`}>
-                            &nbsp;
-                        </Link>
-                    </Breadcrumbs>
-                </Box>
-            )}
-        </>
-    );
+    const header = ({ feedUrl }) => {
+        const feedUrlHost = feedUrl ? new URL(feedUrl).host : null;
+
+        return (
+            <>
+                <Grid
+                    container
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    spacing={2}
+                >
+                    {feedUrl &&
+                        headerButtons.map((i) => (
+                            <HeaderButton key={i} text={i} feedUrl={feedUrl} />
+                        ))}
+                </Grid>
+                {feedUrl && feedUrlHost === contentHost && shortUrl(feedUrl).split('/').length > 2 && (
+                    <Box mt={2.5}>
+                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} maxItems={5}>
+                            {feedUrl &&
+                                shortUrl(feedUrl)
+                                    .split('/')
+                                    .map((v, i, a) =>
+                                        i > a.length - 3 ? null : (
+                                            /* eslint-disable react/no-array-index-key */
+                                            <Link
+                                                key={i + v}
+                                                href="/"
+                                                as={`/?i=${encodeURIComponent(
+                                                    `${a.slice(0, i + 1).join('/')}/${a[
+                                                        a.length - 1
+                                                    ]
+                                                        .replace(/_index.json$/, '')
+                                                        .replace(/.json$/, '')}_index.json`,
+                                                )}`}
+                                            >
+                                                {v === '.' ? 'All' : _startCase(v)}
+                                            </Link>
+                                        ),
+                                    )}
+                            <Link href="/" as={`/?i=${encodeURIComponent(feedUrl)}`}>
+                                &nbsp;
+                            </Link>
+                        </Breadcrumbs>
+                    </Box>
+                )}
+                {feedUrl && feedUrlHost !== contentHost && (
+                    <Box mt={2.5}>
+                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} maxItems={5}>
+                            <span>{feedUrl}</span>
+                        </Breadcrumbs>
+                    </Box>
+                )}
+            </>
+        );
+    };
 
     const subheader = ({ feed, feedUrl }) => (
         <>
